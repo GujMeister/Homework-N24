@@ -22,31 +22,24 @@ extension UIImageView {
     }
 
     func setImage(with url: URL?, placeholder: UIImage? = nil) {
-        // Cancel prior task, if any
         weak var oldTask = savedTask
         savedTask = nil
         oldTask?.cancel()
 
-        // Reset image view’s image
         self.image = placeholder
 
-        // Allow supplying of `nil` to remove old image and then return immediately
         guard let url = url else { return }
 
-        // Check cache
         if let cachedImage = ImageCache.shared.image(forKey: url.absoluteString) {
             self.image = cachedImage
             return
         }
 
-        // Download
         savedUrl = url
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             self?.savedTask = nil
 
-            // Error handling
             if let error = error {
-                // Don't bother reporting cancelation errors
                 if (error as NSError).code == NSURLErrorCancelled { return }
                 print(error)
                 return
@@ -66,7 +59,6 @@ extension UIImageView {
             }
         }
 
-        // Save and start new task
         savedTask = task
         task.resume()
     }
