@@ -8,7 +8,7 @@ class ImagePreviewVC: UIViewController {
     
     internal var dataSource: UICollectionViewDiffableDataSource<Section, PhotosModelElement>!
     internal var currentSnapshot: NSDiffableDataSourceSnapshot<Section, PhotosModelElement>!
-
+    
     init(viewModel: ImagePreviewVM) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -29,7 +29,7 @@ class ImagePreviewVC: UIViewController {
         let collectionView = UICollectionView(frame: view.frame, collectionViewLayout: layout)
         collectionView.backgroundColor = .black
         collectionView.delegate = self
-        collectionView.isPagingEnabled = true
+        collectionView.isPagingEnabled = false
         collectionView.register(PreviewCollectionCell.self, forCellWithReuseIdentifier: PreviewCollectionCell.reuseIdentifier)
         
         return collectionView
@@ -41,8 +41,9 @@ class ImagePreviewVC: UIViewController {
         cellData()
         updateSnapshot()
         setupUI()
+        scrollToItem(at: viewModel.passedContentOffset)
     }
-
+    
     // MARK: - UISetup
     private func setupUI() {
         navigationController?.isNavigationBarHidden = false
@@ -58,6 +59,14 @@ class ImagePreviewVC: UIViewController {
             previewCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             previewCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         ])
+    }
+    
+    private func scrollToItem(at index: IndexPath) {
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.1) { [weak self] in
+            let indexPath = index
+            self?.previewCollectionView.scrollToItem(at: indexPath, at: .left, animated: false)
+            self?.previewCollectionView.isPagingEnabled = true
+        }
     }
 }
 

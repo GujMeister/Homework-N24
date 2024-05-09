@@ -30,7 +30,7 @@ class GalleryVM {
     }
     
     private func fetchPictures() {
-        WebService().fetchData(from: "https://api.unsplash.com/photos/?client_id=9eJMaMVPl50fKO8ePj8WYN5eB0EenW141dxsyZUs8Sg", resultType: PhotosModel.self) { [weak self] result in
+        WebService().fetchData(from: "https://api.unsplash.com/photos/?per_page=100&client_id=9eJMaMVPl50fKO8ePj8WYN5eB0EenW141dxsyZUs8Sg", resultType: PhotosModel.self) { [weak self] result in
             switch result {
             case .success(let response):
                 if !response.isEmpty {

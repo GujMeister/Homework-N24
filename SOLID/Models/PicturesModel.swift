@@ -17,7 +17,7 @@ struct PhotosModelElement: Decodable, Hashable {
 }
 
 // MARK: - Urls
-struct Urls: Codable, Hashable {
+struct Urls: Decodable, Hashable {
     let raw, full, regular, small: String?
     let thumb, smallS3: String?
 
