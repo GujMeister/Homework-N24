@@ -14,6 +14,7 @@ extension GalleryVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayou
         viewModel.picturesCount
     }
     
+    // MARK: - Diffable Data source
     func cellData() {
         dataSource = UICollectionViewDiffableDataSource<Section, PhotosModelElement>(collectionView: collectionView) { (collectionView, indexPath, photoModel) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
@@ -46,7 +47,7 @@ extension GalleryVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayou
         dataSource.apply(currentSnapshot, animatingDifferences: true)
     }
     
-    // MARK: - CollectionView
+    // MARK: - Delegate
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width
         
@@ -66,17 +67,9 @@ extension GalleryVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayou
         return 1.0
     }
     
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        cell.alpha = 0.2
-        UIView.animate(withDuration: 0.2) {
-            cell.alpha = 1
-        }
-    }
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(indexPath)
-        navigateToPreview(index: indexPath.row)
+        navigateToPreview(index: indexPath)
     }
 }
 

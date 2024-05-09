@@ -9,7 +9,7 @@ import Foundation
 
 class ImagePreviewVM {
     var cachedImages: [URL: Data] = [:]
-    var passedContentOffset: Int?
+    var passedContentOffset: IndexPath?
     var pictures: [PhotosModelElement] = []
     var picturesCount: Int = 0
 
@@ -21,11 +21,4 @@ class ImagePreviewVM {
     }
     
     var onPicturesUpdated: (() -> Void)?
-}
-
-struct ImagePreviewData {
-  let pictures: [PhotosModelElement]
-  let picturesCount: Int
-  let cachedImages: [URL: Data]
-  let passedContentOffset: Int
 }

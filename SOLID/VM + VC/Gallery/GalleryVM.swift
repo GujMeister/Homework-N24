@@ -9,13 +9,8 @@ import Foundation
 import SimpleNetworking
 import SDWebImage
 
-protocol GalleryVCDelegate {
-  func updateCollectionView()
-}
-
 class GalleryVM {
     // MARK: - Properties
-    
     var pictures: [PhotosModelElement] = [] {
         didSet { onPicturesUpdated?() }
     }
@@ -23,19 +18,18 @@ class GalleryVM {
     var picturesCount: Int = 0 {
         didSet { onPicturesCountUpdated?() }
     }
-
+    
     var onPicturesUpdated: (() -> Void)?
     var onPicturesCountUpdated: (() -> Void)?
-    var onPhotoSelected: (([URL: Data], IndexPath) -> Void)?
+//    var onPhotoSelected: (([URL: Data], IndexPath) -> Void)?
     
-//    var cachedImages: [URL: UIImage] = [:]
     var cachedImages: [URL: Data] = [:]
     
     // MARK: - Functions
     public func didLoad() {
         fetchPictures()
     }
-
+    
     private func fetchPictures() {
         WebService().fetchData(from: "https://api.unsplash.com/photos/?client_id=9eJMaMVPl50fKO8ePj8WYN5eB0EenW141dxsyZUs8Sg", resultType: PhotosModel.self) { [weak self] result in
             switch result {
@@ -44,6 +38,7 @@ class GalleryVM {
                     self?.pictures = response
                     self?.picturesCount = response.count
                     print("✅ Pictures fetched ✅")
+                    print("🧌Pitures count: \(response.count)🧌")
                     response.forEach { photo in
                         if let urlString = photo.urls?.regular, let url = URL(string: urlString) {
                             // Check if image is not already cached
@@ -65,5 +60,8 @@ class GalleryVM {
             }
         }
     }
+}
 
+protocol GalleryVCDelegate {
+    func updateCollectionView()
 }

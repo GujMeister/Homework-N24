@@ -8,55 +8,54 @@
 import Foundation
 import UIKit
 
-// MARK: - ImagePreviewFullViewCell
+// MARK: - PreviewCollectionCell
 class PreviewCollectionCell: UICollectionViewCell, UIScrollViewDelegate {
     
     // MARK: - Properties
-    var scrollImg: UIScrollView!
-    var imgView: UIImageView!
+    var scrollImage: UIScrollView!
+    var imageView: UIImageView!
     
     static let reuseIdentifier = "PreviewCollectionCell"
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        scrollImg = UIScrollView()
-        scrollImg.delegate = self
-        scrollImg.alwaysBounceVertical = false
-        scrollImg.alwaysBounceHorizontal = false
-        scrollImg.showsVerticalScrollIndicator = true
-        scrollImg.flashScrollIndicators()
+        scrollImage = UIScrollView()
+        scrollImage.delegate = self
+        scrollImage.alwaysBounceVertical = false
+        scrollImage.alwaysBounceHorizontal = false
+        scrollImage.showsVerticalScrollIndicator = true
+        scrollImage.flashScrollIndicators()
         
-        scrollImg.minimumZoomScale = 1.0
-        scrollImg.maximumZoomScale = 4.0
+        scrollImage.minimumZoomScale = 1.0
+        scrollImage.maximumZoomScale = 4.0
         
         let doubleTapGest = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTapScrollView(recognizer:)))
         doubleTapGest.numberOfTapsRequired = 2
-        scrollImg.addGestureRecognizer(doubleTapGest)
+        scrollImage.addGestureRecognizer(doubleTapGest)
         
-        self.addSubview(scrollImg)
-        
+        self.addSubview(scrollImage)
         
         // Setup image view
-        imgView = UIImageView()
-        scrollImg.addSubview(imgView!)
-        imgView.contentMode = .scaleAspectFit
+        imageView = UIImageView()
+        scrollImage.addSubview(imageView!)
+        imageView.contentMode = .scaleAspectFit
     }
     
     // MARK: - Double Tap Zoom
     @objc func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
-        if scrollImg.zoomScale == 1 {
-            scrollImg.zoom(to: zoomRectForScale(scale: scrollImg.maximumZoomScale, center: recognizer.location(in: recognizer.view)), animated: true)
+        if scrollImage.zoomScale == 1 {
+            scrollImage.zoom(to: zoomRectForScale(scale: scrollImage.maximumZoomScale, center: recognizer.location(in: recognizer.view)), animated: true)
         } else {
-            scrollImg.setZoomScale(1, animated: true)
+            scrollImage.setZoomScale(1, animated: true)
         }
     }
     
     func zoomRectForScale(scale: CGFloat, center: CGPoint) -> CGRect {
         var zoomRect = CGRect.zero
-        zoomRect.size.height = imgView.frame.size.height / scale
-        zoomRect.size.width  = imgView.frame.size.width  / scale
-        let newCenter = imgView.convert(center, from: scrollImg)
+        zoomRect.size.height = imageView.frame.size.height / scale
+        zoomRect.size.width  = imageView.frame.size.width  / scale
+        let newCenter = imageView.convert(center, from: scrollImage)
         zoomRect.origin.x = newCenter.x - (zoomRect.size.width / 2.0)
         zoomRect.origin.y = newCenter.y - (zoomRect.size.height / 2.0)
         return zoomRect
@@ -64,18 +63,18 @@ class PreviewCollectionCell: UICollectionViewCell, UIScrollViewDelegate {
     
     // MARK: - UIScrollViewDelegate
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return self.imgView
+        return self.imageView
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        scrollImg.frame = self.bounds
-        imgView.frame = self.bounds
+        scrollImage.frame = self.bounds
+        imageView.frame = self.bounds
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        scrollImg.setZoomScale(1, animated: true)
+        scrollImage.setZoomScale(1, animated: true)
     }
     
     required init?(coder aDecoder: NSCoder) {

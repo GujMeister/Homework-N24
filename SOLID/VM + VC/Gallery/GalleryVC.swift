@@ -4,13 +4,11 @@
 //
 //  Created by Luka Gujejiani on 08.05.24.
 //
-enum Section {
-    case first
-}
+
 import UIKit
 
 class GalleryVC: UIViewController {
-    
+    // MARK: - Properties
     var viewModel: GalleryVM! = GalleryVM()
     
     var dataSource: UICollectionViewDiffableDataSource<Section, PhotosModelElement>!
@@ -20,7 +18,7 @@ class GalleryVC: UIViewController {
         let label = UILabel()
         label.text = "გალერეა"
         label.textColor = UIColor(hex: "3C79F1")
-        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         return label
     }()
     
@@ -29,12 +27,13 @@ class GalleryVC: UIViewController {
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .blue
+        collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         collectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: PhotoCollectionViewCell.reuseIdentifier)
         return collectionView
     }()
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -48,11 +47,15 @@ class GalleryVC: UIViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        navigationController?.isNavigationBarHidden = true
+    }
+    
     // MARK: - Setup UI
     func setupUI() {
         
-        navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = .red
+        view.backgroundColor = .systemBackground
         
         view.addSubview(GalleryVC.galleryLabel)
         view.addSubview(collectionView)
@@ -62,11 +65,11 @@ class GalleryVC: UIViewController {
         
         NSLayoutConstraint.activate([
             GalleryVC.galleryLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            GalleryVC.galleryLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            GalleryVC.galleryLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5),
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            collectionView.topAnchor.constraint(equalTo: GalleryVC.galleryLabel.bottomAnchor, constant: 10),
+            collectionView.topAnchor.constraint(equalTo: GalleryVC.galleryLabel.bottomAnchor, constant: 15),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         ])
     }
@@ -82,17 +85,11 @@ class GalleryVC: UIViewController {
         }
     }
     
-    func navigateToPreview(index: Int) {
-        let selectedPhoto = viewModel.pictures[index]
+    // MARK: - Navigation
+    func navigateToPreview(index: IndexPath) {
+        let selectedPhoto = viewModel.pictures[index.row]
       guard let imageUrlString = selectedPhoto.urls?.regular, let imageUrl = URL(string: imageUrlString) else { return }
-
         let previewData = ImagePreviewData(pictures: viewModel.pictures, picturesCount: viewModel.picturesCount, cachedImages: viewModel.cachedImages, passedContentOffset: index)
-        
-        print("Preview Data:")
-        print("Pictures Count: \(previewData.picturesCount)")
-        print("Cached Images Count: \(previewData.cachedImages.count)")
-        print("Passed Content Offset: \(previewData.passedContentOffset)")
-
       let previewVM = ImagePreviewVM(previewData: previewData)
       let PreviewVC = ImagePreviewVC(viewModel: previewVM)
       navigationController?.pushViewController(PreviewVC, animated: true)

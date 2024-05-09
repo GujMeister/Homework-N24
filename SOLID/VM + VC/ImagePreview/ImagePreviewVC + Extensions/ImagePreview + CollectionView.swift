@@ -9,27 +9,33 @@ import UIKit
 
 extension ImagePreviewVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    // MARK: - CollectionView Data Source Methods
+    // MARK: - Data Source Methods
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.picturesCount
+        viewModel.pictures.count
     }
     
     func cellData() {
-        dataSource = UICollectionViewDiffableDataSource<Section, PhotosModelElement>(collectionView: myCollectionView) { (collectionView, indexPath, photoModel) -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<Section, PhotosModelElement>(collectionView: previewCollectionView) { (collectionView, indexPath, photoModel) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PreviewCollectionCell.reuseIdentifier, for: indexPath) as! PreviewCollectionCell
             
             if let urlString = photoModel.urls?.regular, let url = URL(string: urlString) {
                 if let cachedImageData = self.viewModel.cachedImages[url] {
                     if let cachedImage = UIImage(data: cachedImageData) {
-                        cell.imgView.image = cachedImage
+                        print("Setting image using cachedImage")
+                        print("🟢\(indexPath)🟢")
+                        cell.imageView.image = cachedImage
+                        
                     } else {
-                        cell.imgView.image = UIImage(named: "placeholder")
+                        print("Setting placeholder image")
+                        cell.imageView.image = UIImage(named: "placeholder")
                     }
                 } else {
-                    cell.imgView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+                    print("Setting image using sd_setImage")
+                    print("🟢\(indexPath)🟢")
+                    cell.imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
                 }
             } else {
-                cell.imgView.image = UIImage(named: "placeholder")
+                cell.imageView.image = UIImage(named: "placeholder")
             }
             
             return cell
@@ -44,35 +50,32 @@ extension ImagePreviewVC: UICollectionViewDelegate, UICollectionViewDelegateFlow
         currentSnapshot.appendSections([.first])
         currentSnapshot.appendItems(viewModel.pictures)
         dataSource.apply(currentSnapshot, animatingDifferences: true)
+        print("🔴 Update snapshot called 🔴")
     }
     
-    // MARK: - CollectionView Delegate Flow Layout Methods
+    // MARK: - Delegate Flow Layout Methods
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        
-        guard let flowLayout = myCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-        
-        flowLayout.itemSize = myCollectionView.frame.size
-        
+        guard let flowLayout = previewCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        flowLayout.itemSize = previewCollectionView.frame.size
         flowLayout.invalidateLayout()
-        
-        myCollectionView.collectionViewLayout.invalidateLayout()
+        previewCollectionView.collectionViewLayout.invalidateLayout()
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        let offset = myCollectionView.contentOffset
-        let width  = myCollectionView.bounds.size.width
+        let offset = previewCollectionView.contentOffset
+        let width  = previewCollectionView.bounds.size.width
         
         let index = round(offset.x / width)
         let newOffset = CGPoint(x: index * size.width, y: offset.y)
         
-        myCollectionView.setContentOffset(newOffset, animated: false)
+        previewCollectionView.setContentOffset(newOffset, animated: false)
         
         coordinator.animate(alongsideTransition: { (context) in
-            self.myCollectionView.reloadData()
+            self.previewCollectionView.reloadData()
             
-            self.myCollectionView.setContentOffset(newOffset, animated: false)
+            self.previewCollectionView.setContentOffset(newOffset, animated: false)
         }, completion: nil)
     }
 }
