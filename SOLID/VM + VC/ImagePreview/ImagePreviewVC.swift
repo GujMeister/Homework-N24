@@ -4,10 +4,10 @@ import UIKit
 // MARK: - Image Preview VC
 class ImagePreviewVC: UIViewController {
     // MARK: - Properties
-    var viewModel: ImagePreviewVM!
+    internal let viewModel: ImagePreviewVM!
     
-    var dataSource: UICollectionViewDiffableDataSource<Section, PhotosModelElement>!
-    var currentSnapshot: NSDiffableDataSourceSnapshot<Section, PhotosModelElement>!
+    internal var dataSource: UICollectionViewDiffableDataSource<Section, PhotosModelElement>!
+    internal var currentSnapshot: NSDiffableDataSourceSnapshot<Section, PhotosModelElement>!
 
     init(viewModel: ImagePreviewVM) {
         self.viewModel = viewModel
@@ -19,7 +19,7 @@ class ImagePreviewVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    lazy var previewCollectionView: UICollectionView = {
+    internal lazy var previewCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         layout.minimumInteritemSpacing = 0
@@ -44,7 +44,7 @@ class ImagePreviewVC: UIViewController {
     }
 
     // MARK: - UISetup
-    func setupUI() {
+    private func setupUI() {
         navigationController?.isNavigationBarHidden = false
         view.backgroundColor = .black
         

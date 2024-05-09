@@ -11,19 +11,18 @@ import SDWebImage
 
 class GalleryVM {
     // MARK: - Properties
-    var pictures: [PhotosModelElement] = [] {
+    public var pictures: [PhotosModelElement] = [] {
         didSet { onPicturesUpdated?() }
     }
     
-    var picturesCount: Int = 0 {
+    public var picturesCount: Int = 0 {
         didSet { onPicturesCountUpdated?() }
     }
     
     var onPicturesUpdated: (() -> Void)?
     var onPicturesCountUpdated: (() -> Void)?
-//    var onPhotoSelected: (([URL: Data], IndexPath) -> Void)?
     
-    var cachedImages: [URL: Data] = [:]
+    public var cachedImages: [URL: Data] = [:]
     
     // MARK: - Functions
     public func didLoad() {

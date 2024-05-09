@@ -9,10 +9,10 @@ import UIKit
 
 class GalleryVC: UIViewController {
     // MARK: - Properties
-    var viewModel: GalleryVM! = GalleryVM()
+    internal var viewModel: GalleryVM! = GalleryVM()
     
-    var dataSource: UICollectionViewDiffableDataSource<Section, PhotosModelElement>!
-    var currentSnapshot: NSDiffableDataSourceSnapshot<Section, PhotosModelElement>!
+    internal var dataSource: UICollectionViewDiffableDataSource<Section, PhotosModelElement>!
+    internal var currentSnapshot: NSDiffableDataSourceSnapshot<Section, PhotosModelElement>!
     
     static let galleryLabel: UILabel = {
         let label = UILabel()
@@ -53,7 +53,7 @@ class GalleryVC: UIViewController {
     }
     
     // MARK: - Setup UI
-    func setupUI() {
+    private func setupUI() {
         
         view.backgroundColor = .systemBackground
         
@@ -75,7 +75,7 @@ class GalleryVC: UIViewController {
     }
     
     // MARK: - Helper functions
-    internal func reloadData() {
+    private func reloadData() {
         viewModel.onPicturesUpdated = { [weak self] in
             DispatchQueue.main.async {
                 print("onPicturesUpdated closure called. Reloading data...")
@@ -86,9 +86,9 @@ class GalleryVC: UIViewController {
     }
     
     // MARK: - Navigation
-    func navigateToPreview(index: IndexPath) {
+    public func navigateToPreview(index: IndexPath) {
         let selectedPhoto = viewModel.pictures[index.row]
-      guard let imageUrlString = selectedPhoto.urls?.regular, let imageUrl = URL(string: imageUrlString) else { return }
+      guard let imageUrlString = selectedPhoto.urls?.regular, let _ = URL(string: imageUrlString) else { return }
         let previewData = ImagePreviewData(pictures: viewModel.pictures, picturesCount: viewModel.picturesCount, cachedImages: viewModel.cachedImages, passedContentOffset: index)
       let previewVM = ImagePreviewVM(previewData: previewData)
       let PreviewVC = ImagePreviewVC(viewModel: previewVM)

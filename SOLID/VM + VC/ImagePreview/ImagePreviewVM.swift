@@ -8,14 +8,14 @@
 import Foundation
 
 class ImagePreviewVM {
-    var cachedImages: [URL: Data] = [:]
-    var passedContentOffset: IndexPath {
+    public var cachedImages: [URL: Data] = [:]
+    public var passedContentOffset: IndexPath {
         didSet { onPassedContentOffsetUpdated?() }
     }
-    var pictures: [PhotosModelElement] = [] {
+    public var pictures: [PhotosModelElement] = [] {
         didSet { onPicturesUpdated?() }
     }
-    var picturesCount: Int = 0
+    public var picturesCount: Int = 0
 
     init(previewData: ImagePreviewData) {
       self.pictures = previewData.pictures
