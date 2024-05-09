@@ -12,10 +12,7 @@ class ImagePreviewVC: UIViewController {
     init(viewModel: ImagePreviewVM) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        print("Received Preview Data:")
-        print("Pictures Count: \(viewModel.picturesCount)")
-        print("Cached Images Count: \(viewModel.cachedImages.count)")
-        print("Passed Content Offset: \(viewModel.passedContentOffset as Any)")
+        print("Received Preview Data:\n", "Pictures Count: \(viewModel.picturesCount)\n", "Cached Images Count: \(viewModel.cachedImages.count)\n", "Passed Content Offset: \(viewModel.passedContentOffset as Any)")
     }
     
     required init?(coder: NSCoder) {
@@ -34,19 +31,16 @@ class ImagePreviewVC: UIViewController {
         collectionView.delegate = self
         collectionView.isPagingEnabled = true
         collectionView.register(PreviewCollectionCell.self, forCellWithReuseIdentifier: PreviewCollectionCell.reuseIdentifier)
+        
         return collectionView
     }()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         cellData()
         updateSnapshot()
-        
-        viewModel.onPicturesUpdated = { [weak self] in
-            self?.updateSnapshot()
-        }
+        setupUI()
     }
 
     // MARK: - UISetup
@@ -64,9 +58,6 @@ class ImagePreviewVC: UIViewController {
             previewCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             previewCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         ])
-        
-        self.view.addSubview(previewCollectionView)
-        previewCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
 }
 

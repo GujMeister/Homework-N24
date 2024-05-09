@@ -43,6 +43,7 @@ extension ImagePreviewVC: UICollectionViewDelegate, UICollectionViewDelegateFlow
         viewModel.onPicturesUpdated = { [weak self] in
             self?.updateSnapshot()
         }
+        
     }
 
     func updateSnapshot() {
@@ -60,22 +61,5 @@ extension ImagePreviewVC: UICollectionViewDelegate, UICollectionViewDelegateFlow
         flowLayout.itemSize = previewCollectionView.frame.size
         flowLayout.invalidateLayout()
         previewCollectionView.collectionViewLayout.invalidateLayout()
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        let offset = previewCollectionView.contentOffset
-        let width  = previewCollectionView.bounds.size.width
-        
-        let index = round(offset.x / width)
-        let newOffset = CGPoint(x: index * size.width, y: offset.y)
-        
-        previewCollectionView.setContentOffset(newOffset, animated: false)
-        
-        coordinator.animate(alongsideTransition: { (context) in
-            self.previewCollectionView.reloadData()
-            
-            self.previewCollectionView.setContentOffset(newOffset, animated: false)
-        }, completion: nil)
     }
 }
